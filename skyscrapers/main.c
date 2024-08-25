@@ -6,11 +6,10 @@
 /*   By: gyasuhir <gyasuhir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/25 13:17:41 by gyasuhir          #+#    #+#             */
-/*   Updated: 2024/08/25 18:46:27 by gyasuhir         ###   ########.fr       */
+/*   Updated: 2024/08/25 19:43:53 by gyasuhir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include    <stdbool.h>
 #include	<unistd.h>
 #include    "utils.h"
 #include    "choice.h"
@@ -34,7 +33,7 @@ void	initialize_board(int board[4][4])
 	return ;
 }
 
-bool	validate_input(char *str)
+int	validate_input(char *str)
 {
 	int	i;
 	int	count;
@@ -43,6 +42,8 @@ bool	validate_input(char *str)
 	count = 0;
 	while (str[i] != '\0')
 	{
+		if (str[i] == '-')
+			return (0);
 		if (str[i] >= '0' && str[i] <= '4')
 		{
 			count++;
@@ -50,9 +51,9 @@ bool	validate_input(char *str)
 		i++;
 	}
 	if (count == 16)
-		return (true);
+		return (1);
 	else
-		return (false);
+		return (0);
 }
 
 void	initialize_params(int input_constraints[4][4], char *str)
@@ -85,19 +86,23 @@ int	main(int argc, char *argv[])
 	int	board[4][4];
 	int	input_constraints[4][4];
 
-	(void)argc;
-	if (validate_input(argv[1]))
-		initialize_params(input_constraints, argv[1]);
-	else
+	if (argc == 2)
 	{
-		write(1, &"Invalid parameter, try again using exactly "
-			"16 numbers between 1 and 4.\n", 72);
-		return (0);
+		if (validate_input(argv[1]) == 1)
+			initialize_params(input_constraints, argv[1]);
+		else
+		{
+			write(1, &"Invalid parameter, try again using exactly "
+				"16 numbers between 1 and 4.\n", 72);
+			return (0);
+		}
+		initialize_board(board);
+		if (solve(input_constraints, board, 0, 0) == 1)
+			print_board(board);
+		else
+			write(1, &"The given numbers does not have a solution.\n", 1);
 	}
-	initialize_board(board);
-	if (solve(input_constraints, board, 0, 0))
-		print_board(board);
 	else
-		write(1, &"The given numbers does not have a solution.\n", 1);
+		write(1, "Invalid number of parameters", 29);
 	return (0);
 }

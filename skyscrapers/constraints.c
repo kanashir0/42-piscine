@@ -6,14 +6,13 @@
 /*   By: gyasuhir <gyasuhir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/25 13:06:51 by gyasuhir          #+#    #+#             */
-/*   Updated: 2024/08/25 13:50:55 by gyasuhir         ###   ########.fr       */
+/*   Updated: 2024/08/25 19:17:53 by gyasuhir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include    <stdbool.h>
 #include	"utils.h"
 
-bool	is_up_clue_valid(
+int	is_up_clue_valid(
 	int input_constraints[4][4], int board[4][4], int col)
 {
 	int	i;
@@ -28,7 +27,7 @@ bool	is_up_clue_valid(
 	while (i < 4)
 	{
 		if (board[i][col] == 0)
-			return (true);
+			return (1);
 		if (board[i][col] > tallest_building)
 		{
 			tallest_building = board[i][col];
@@ -37,11 +36,11 @@ bool	is_up_clue_valid(
 		i++;
 	}
 	if (visible_buildings == up_constraint)
-		return (true);
-	return (false);
+		return (1);
+	return (0);
 }
 
-bool	is_down_clue_valid(
+int	is_down_clue_valid(
 	int input_constraints[4][4], int board[4][4], int col)
 {
 	int	i;
@@ -56,7 +55,7 @@ bool	is_down_clue_valid(
 	while (i >= 0)
 	{
 		if (board[i][col] == 0)
-			return (true);
+			return (1);
 		if (board[i][col] > tallest_building)
 		{
 			tallest_building = board[i][col];
@@ -65,11 +64,11 @@ bool	is_down_clue_valid(
 		i--;
 	}
 	if (visible_buildings == down_constraint)
-		return (true);
-	return (false);
+		return (1);
+	return (0);
 }
 
-bool	is_left_clue_valid(
+int	is_left_clue_valid(
 	int input_constraints[4][4], int board[4][4], int row)
 {
 	int	i;
@@ -84,7 +83,7 @@ bool	is_left_clue_valid(
 	while (i < 4)
 	{
 		if (board[row][i] == 0)
-			return (true);
+			return (1);
 		if (board[row][i] > tallest_building)
 		{
 			tallest_building = board[row][i];
@@ -93,11 +92,11 @@ bool	is_left_clue_valid(
 		i++;
 	}
 	if (visible_buildings == left_constraint)
-		return (true);
-	return (false);
+		return (1);
+	return (0);
 }
 
-bool	is_right_clue_valid(
+int	is_right_clue_valid(
 	int input_constraints[4][4], int board[4][4], int row)
 {
 	int	i;
@@ -112,7 +111,7 @@ bool	is_right_clue_valid(
 	while (i >= 0)
 	{
 		if (board[row][i] == 0)
-			return (true);
+			return (1);
 		if (board[row][i] > tallest_building)
 		{
 			tallest_building = board[row][i];
@@ -121,22 +120,22 @@ bool	is_right_clue_valid(
 		i--;
 	}
 	if (visible_buildings == right_constraint)
-		return (true);
-	return (false);
+		return (1);
+	return (0);
 }
 
-bool	is_valid_choice(
+int	is_valid_choice(
 	int input_constraints[4][4], int board[4][4], int row, int col)
 {
-	if (!unique_num_row_col(board, row, col))
-		return (false);
-	if (!is_up_clue_valid(input_constraints, board, col))
-		return (false);
-	if (!is_down_clue_valid(input_constraints, board, col))
-		return (false);
-	if (!is_left_clue_valid(input_constraints, board, row))
-		return (false);
-	if (!is_right_clue_valid(input_constraints, board, row))
-		return (false);
-	return (true);
+	if (unique_num_row_col(board, row, col) == 0)
+		return (0);
+	if (is_up_clue_valid(input_constraints, board, col) == 0)
+		return (0);
+	if (is_down_clue_valid(input_constraints, board, col) == 0)
+		return (0);
+	if (is_left_clue_valid(input_constraints, board, row) == 0)
+		return (0);
+	if (is_right_clue_valid(input_constraints, board, row) == 0)
+		return (0);
+	return (1);
 }

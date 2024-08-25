@@ -6,12 +6,11 @@
 /*   By: gyasuhir <gyasuhir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/25 13:18:55 by gyasuhir          #+#    #+#             */
-/*   Updated: 2024/08/25 18:35:51 by gyasuhir         ###   ########.fr       */
+/*   Updated: 2024/08/25 19:14:17 by gyasuhir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include	<unistd.h>
-#include	<stdbool.h>
 
 void	print_number(int num)
 {
@@ -42,7 +41,7 @@ void	print_board(int board[4][4])
 	}
 }
 
-bool	unique_num_row_col(int board[4][4], int row, int col)
+int	unique_num_row_col(int board[4][4], int row, int col)
 {
 	int	i;
 	int	j;
@@ -55,10 +54,10 @@ bool	unique_num_row_col(int board[4][4], int row, int col)
 		{
 			if (board[row][col] == board[i][j] &&
 			((i != row && j == col) || (i == row && j != col)))
-				return (false);
+				return (0);
 			j++;
 		}
 		i++;
 	}
-	return (true);
+	return (1);
 }
