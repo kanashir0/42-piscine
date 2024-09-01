@@ -6,28 +6,28 @@
 #    By: gyasuhir <gyasuhir@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/08/31 15:03:53 by btonetti          #+#    #+#              #
-#    Updated: 2024/09/01 12:43:46 by gyasuhir         ###   ########.fr        #
+#    Updated: 2024/09/01 20:27:11 by gyasuhir         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-# FUNCTIONS = is_number.c validade_input.c
-# @gcc -Wall -Wextra -Werror -o $(NAME) $(FUNCTIONS) $(MAIN)
 NAME = rush-02
-MAIN = monofile.c
+MAIN = main.c
 
 CC = cc
 
 CFLAGS = -Wall -Wextra -Werror
 
+FUNCTIONS = io.c match.c process_number.c utils.c validation.c
+
 all: $(NAME)
 
 $(NAME): $(MAIN)
-	$(CC) $(CFLAGS) -o $(NAME) $(MAIN)
+	$(CC) $(CFLAGS) ${FUNCTIONS} -o $(NAME) $(MAIN)
 
 
 run: $(NAME)
 	./${NAME}
 
 
-clean:
+fclean:
 	rm -f $(NAME)
