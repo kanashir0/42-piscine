@@ -14,6 +14,16 @@
 #include <fcntl.h>
 #include "bsq.h"
 #include <stdio.h>
+#include <stdlib.h>
+
+void	free_objects(t_chars *chars, char **map)
+{
+	for (int i = 0; i < chars->n_lines; i++)
+		free(map[i]);
+	free(map);
+	free(chars);
+	return ;
+}
 
 int	read_map_from_arg(char *filename, char *buffer)
 {
@@ -57,14 +67,26 @@ void	process_map(char *filename)
 {
 	char		raw_file[4096];
 	char		**map;
-	t_answers	*answers;
+	t_answers	*answer;
 	t_chars		*chars;
 
 	read_map_from_arg(filename, raw_file);
 	if (!validate_map(raw_file))
 		return ;
+	chars = (t_chars *) malloc(sizeof(t_chars));
 	map = parse_map(raw_file, chars);
-	// answers = solve_map(map, 0, 0, chars);
+	answer = solve_map(map, chars);
+	
+	printf("%d\n", answer->size);
 	// print_answers(map, answers, chars);
+	// for (int i = 0; i < chars->n_lines; i++)
+	// {
+	// 	for (int j = 0; j < 20; j++)
+	// 	{
+	// 		printf("%c", map[i][j]);
+	// 	}
+	// 	printf("\n");
+	// }
+	free_objects(chars, map);
 	return ;
 }

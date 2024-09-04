@@ -25,8 +25,11 @@ typedef struct s_chars
 	char	obstacle;
 	char	full;
 	int		n_lines;
+	int		n_columns;
 }			t_chars;
 
 void	process_map(char *filename);
 
 char	**parse_map(char *raw_file, t_chars *chars);
+
+t_answers	*solve_map(char **map, t_chars *chars);

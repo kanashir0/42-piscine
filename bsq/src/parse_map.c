@@ -14,6 +14,16 @@
 #include <stdio.h>
 #include "bsq.h"
 
+int get_line_length(char *raw_map)
+{
+	int	i;
+
+	i = 0;
+	while (raw_map[i] != '\n')
+		i++;
+	return (i);
+}
+
 int	parse_lines(char *lines)
 {
 	int	i;
@@ -27,6 +37,29 @@ int	parse_lines(char *lines)
 		i++;
 	}
 	return (num);
+}
+
+char	**populate_map(char **map, char *raw_map, int n_lines)
+{
+	int	i;
+	int	j;
+	int	k;
+
+	i = 0;
+	j = 0;
+	while (j < n_lines && raw_map[i] != '\0')
+	{
+		k = 0;
+		while (raw_map[i] != '\n' && raw_map[i] != '\0')
+		{
+			map[j][k] = raw_map[i];
+			i++;
+			k++;
+		}
+		i++;
+		j++;
+	}
+	return (map);
 }
 
 char	*get_metadata(char *raw_file, t_chars *chars)
@@ -57,13 +90,20 @@ char	*get_metadata(char *raw_file, t_chars *chars)
 char	**parse_map(char *raw_file, t_chars *chars)
 {
 	char	**map;
-	chars = (t_chars *) malloc(sizeof(t_chars));
-	char	*str = get_metadata(raw_file, chars);
-	printf("full: %c\n", chars->full);
-	printf("empty: %c\n", chars->empty);
-	printf("obstacle: %c\n", chars->obstacle);
-	printf("lines: %d\n", chars->n_lines);
-	printf("%s", str);
+	char	*raw_map;
+	int		i;
+	int		line_length;
 
+	raw_map = get_metadata(raw_file, chars);
+	map = (char **) malloc((chars->n_lines + 1) * sizeof(char *));
+	map[chars->n_lines] = NULL;
+	chars->n_columns = get_line_length(raw_map);
+	i = 0;
+	while (i < chars->n_lines)
+	{
+		map[i] = (char *) malloc((chars->n_columns + 1) * sizeof(char));
+		i++;
+	}
+	map = populate_map(map, raw_map, chars->n_lines);
 	return (map);
 }

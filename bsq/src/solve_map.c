@@ -11,10 +11,77 @@
 /* ************************************************************************** */
 
 #include "bsq.h"
+#include <stdlib.h>
 
-t_answers	*solve_map(char **map, int x, int y, t_chars *chars)
+int	is_valid_square(char **map, t_answers *answer, t_chars *chars)
 {
-	t_answers	*answers;
+	int	i;
+	int	j;
 
-	return (answers);
+	if (answer->xn > chars->n_lines || answer->yn > chars->n_columns)
+		return (0);
+	if (map[answer->xn][answer->yn] == chars->obstacle)
+		return (0);
+	i = answer->x0;
+	while (i < answer->xn)
+	{
+		j = answer->y0;
+		while (j < answer->yn)
+		{
+			if (map[i][j] == chars->obstacle)
+				return (0);
+			j++;
+		}
+		i++;
+	}
+	return (1);
+}
+
+t_answers	*get_biggest_square(char **map, t_answers *answer, t_chars *chars)
+{
+	if (is_valid_square(map, answer, chars))
+	{
+		answer->xn = answer->xn + 1;
+		answer->yn = answer->yn + 1;
+		return (get_biggest_square(map, answer, chars));
+	}
+	else
+	{
+		if (answer->x0 == answer->xn && answer->y0 == answer->yn)
+			return (answer);
+		answer->size = answer->xn - answer->x0;
+		return (answer);
+	}
+}
+
+t_answers	*solve_map(char **map, t_chars *chars)
+{
+	int	i;
+	int	j;
+	t_answers	*answer;
+	t_answers	*biggest_square;
+
+	answer = (t_answers *) malloc(sizeof(t_answers));
+	biggest_square = (t_answers *) malloc(sizeof(t_answers));
+	biggest_square->size = -1;
+	i = 0;
+	while (i < chars->n_lines)
+	{
+		j = 0;
+		while (j < chars->n_columns)
+		{
+			answer->x0 = i;
+			answer->y0 = j;
+			answer->xn = i;
+			answer->yn = j;
+			answer->size = -1;
+			answer = get_biggest_square(map, answer, chars);
+			if (answer->size > biggest_square->size)
+				biggest_square = answer;
+			j++;
+		}
+		i++;
+	}
+	free(answer);
+	return (biggest_square);
 }
