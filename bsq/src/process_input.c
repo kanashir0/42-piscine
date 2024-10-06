@@ -6,20 +6,26 @@
 /*   By: gyasuhir <gyasuhir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 11:00:12 by gyasuhir          #+#    #+#             */
-/*   Updated: 2024/09/03 19:39:04 by gyasuhir         ###   ########.fr       */
+/*   Updated: 2024/09/04 22:40:40 by gyasuhir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <unistd.h>
 #include <fcntl.h>
 #include "bsq.h"
-#include <stdio.h>
 #include <stdlib.h>
+#define MAX_BUFFER_SIZE 8192
 
 void	free_objects(t_chars *chars, char **map)
 {
-	for (int i = 0; i < chars->n_lines; i++)
+	int	i;
+
+	i = 0;
+	while (i < chars->n_lines)
+	{
 		free(map[i]);
+		i++;
+	}
 	free(map);
 	free(chars);
 	return ;
@@ -36,7 +42,7 @@ int	read_map_from_arg(char *filename, char *buffer)
 		write(1, &"Error while opening file\n", 26);
 		return (0);
 	}
-	size = read(fd, buffer, 4096);
+	size = read(fd, buffer, MAX_BUFFER_SIZE);
 	if (size < 0)
 	{
 		write(1, &"Error while reading file\n", 26);
@@ -46,47 +52,52 @@ int	read_map_from_arg(char *filename, char *buffer)
 	return (1);
 }
 
-int	validate_map(char *map)
+int	read_map_from_std(char *buffer)
 {
-	/*
-	◦ All lines must have the same length.
-	◦ There’s at least one line of at least one box.
-	◦ At each end of line, there’s a line break.
-	◦ The characters on the map can only be those introduced in the first line.
-	◦ The map is invalid if a character is missing from the first line, or if two characters (of empty, full and obstacle) are identical.
-	◦ The characters can be any printable character, even numbers.
-	◦ In case of an invalid map, your program should display map error on the error output followed by a line break. Your program will then move on to the next map.
-	*/
-	
-	// Se um mapa não for valido precisamos printar um erro aqui.
+	int	byte_r;
+	int	bytes_read;
 
+	bytes_read = 0;
+	while (1)
+	{
+		byte_r = read(STDIN_FILENO, buffer + bytes_read, 1);
+		if (byte_r == 0 || bytes_read > MAX_BUFFER_SIZE - 1)
+			break ;
+		if (byte_r < 0)
+		{
+			write(1, &"Error while reading file\n", 26);
+			return (0);
+		}
+		bytes_read += byte_r;
+	}
+	buffer[bytes_read] = '\0';
 	return (1);
 }
 
-void	process_map(char *filename)
+int	validate_map(char *raw_map)
 {
-	char		raw_file[4096];
+	if (!validate_lines(raw_map))
+		return (0);
+	return (1);
+}
+
+void	process_map(char *filename, int argc)
+{
+	char		raw_file[MAX_BUFFER_SIZE];
 	char		**map;
 	t_answers	*answer;
 	t_chars		*chars;
 
-	read_map_from_arg(filename, raw_file);
+	if (argc > 1)
+		read_map_from_arg(filename, raw_file);
+	else
+		read_map_from_std(raw_file);
 	if (!validate_map(raw_file))
 		return ;
 	chars = (t_chars *) malloc(sizeof(t_chars));
 	map = parse_map(raw_file, chars);
-	answer = solve_map(map, chars);
-	
-	printf("%d\n", answer->size);
-	// print_answers(map, answers, chars);
-	// for (int i = 0; i < chars->n_lines; i++)
-	// {
-	// 	for (int j = 0; j < 20; j++)
-	// 	{
-	// 		printf("%c", map[i][j]);
-	// 	}
-	// 	printf("\n");
-	// }
+	answer = solve_map(map, chars, 0, 0);
+	print_answer(map, answer, chars);
 	free_objects(chars, map);
 	return ;
 }

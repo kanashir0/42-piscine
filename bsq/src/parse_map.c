@@ -6,15 +6,14 @@
 /*   By: gyasuhir <gyasuhir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/09/03 13:01:41 by gyasuhir          #+#    #+#             */
-/*   Updated: 2024/09/03 20:00:49 by gyasuhir         ###   ########.fr       */
+/*   Updated: 2024/09/04 22:10:01 by gyasuhir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdlib.h>
-#include <stdio.h>
 #include "bsq.h"
 
-int get_line_length(char *raw_map)
+int	get_line_length(char *raw_map)
 {
 	int	i;
 
@@ -92,12 +91,11 @@ char	**parse_map(char *raw_file, t_chars *chars)
 	char	**map;
 	char	*raw_map;
 	int		i;
-	int		line_length;
 
 	raw_map = get_metadata(raw_file, chars);
 	map = (char **) malloc((chars->n_lines + 1) * sizeof(char *));
-	map[chars->n_lines] = NULL;
 	chars->n_columns = get_line_length(raw_map);
+	map[chars->n_lines] = NULL;
 	i = 0;
 	while (i < chars->n_lines)
 	{

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_sort_int_tab.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: gyasuhir <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: gyasuhir <gyasuhir@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/19 17:09:18 by gyasuhir          #+#    #+#             */
-/*   Updated: 2024/08/20 09:19:24 by gyasuhir         ###   ########.fr       */
+/*   Updated: 2024/08/30 17:39:56 by gyasuhir         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,4 +34,29 @@ void	ft_sort_int_tab(int *tab, int size)
 		i++;
 	}
 	return ;
+}
+
+#include	<stdio.h>
+
+int	main(void)
+{
+	int	counter;
+	int	array[5] = {30, 20, 50, 10, 40};
+
+	counter = 0;
+	while (counter < 5)
+	{
+		printf("%d ", array[counter]);
+		counter++;
+	}
+	printf("\n");
+	ft_sort_int_tab(array, 5);
+	counter = 0;
+	while (counter < 5)
+	{
+		printf("%d ", array[counter]);
+		counter++;
+	}
+	printf("\n");
+	return (0);
 }
